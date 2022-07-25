@@ -11,6 +11,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.List;
 
 public class SIGMainFrame extends JFrame {
     private JFrame f;
@@ -23,7 +24,6 @@ public class SIGMainFrame extends JFrame {
     private JMenuItem saveFileMitem;
 
     private String[][] customerData={
-            {"","","",""},
     };
     private static JTable invTable;
 
@@ -56,6 +56,19 @@ public class SIGMainFrame extends JFrame {
     private ArrayList<InvoiceHeader> invHeaderArray;
     private InvHeaderTableMod invHeaderTableMod;
     private InvLineTableMod invLineTableMod;
+    private List<ListSelectionModel> models = new ArrayList<>();
+
+    public List<ListSelectionModel> getModels() {
+        return models;
+    }
+
+    public void register (ListSelectionModel model){
+        models.add(model);
+        model.addListSelectionListener(handler);
+    }
+    public void register(JTable t){
+        register(t.getSelectionModel());
+    }
 
 
     public ArrayList<InvoiceHeader> getInvHeaderArray() {
@@ -125,6 +138,8 @@ public class SIGMainFrame extends JFrame {
         invTable = new JTable(customerData,customerTableBar);
         DefaultTableModel invModel = new DefaultTableModel();
         invModel.setColumnIdentifiers(customerTableBar);
+        models.add(invTable.getSelectionModel());
+
         invTable.setModel(invModel);
         invTable.getSelectionModel().addListSelectionListener(handler);
 
@@ -185,6 +200,8 @@ public class SIGMainFrame extends JFrame {
         invoiceItemsPanel.setLayout(new FlowLayout());
         invItemsTable = new JTable(itemData,itemTableBar);
         invItemsTable.getSelectionModel().addListSelectionListener(handler);
+        models.add(invItemsTable.getSelectionModel());
+
         invoiceItemsPanel.add(new JScrollPane(invItemsTable));
 
         rightSidePanel.add(invoiceItemsPanel);

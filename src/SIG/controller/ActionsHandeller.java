@@ -32,7 +32,11 @@ public class ActionsHandeller implements ActionListener, ListSelectionListener {
     private InvoiceDialog invDialog;
     private LinesDialog invLineDialog;
 
-    private SIGMainFrame frame;
+    private static SIGMainFrame frame;
+
+    public static SIGMainFrame getFrame() {
+        return frame;
+    }
 
     public ActionsHandeller(SIGMainFrame frame){
         this.frame=frame;
@@ -78,6 +82,14 @@ public class ActionsHandeller implements ActionListener, ListSelectionListener {
 
     @Override
     public void valueChanged(ListSelectionEvent e) {
+        ListSelectionModel selectedModel = (ListSelectionModel) e.getSource();
+        for(ListSelectionModel model : frame.getModels()){
+            if(model != selectedModel){
+                model.removeListSelectionListener(this);
+                model.clearSelection();
+                model.addListSelectionListener(this);
+            }
+        }
         int sellectedRow = frame.getInvTable().getSelectedRow();
         if(sellectedRow !=-1){
             InvoiceHeader sellectedInv =frame.getInvHeaderArray().get(sellectedRow);
@@ -122,10 +134,24 @@ public class ActionsHandeller implements ActionListener, ListSelectionListener {
                         InvoiceHeader header = getInvoiceHeaderUsingID(invHeaderArray,itmID);
                         InvoiceLine invLine = new InvoiceLine(itmContent[1],itmPrice,itmCount,header);
                         header.getLines().add(invLine);
+
                     }
                     frame.setInvHeaderArray(invHeaderArray);
+
+                   // print in the console
+                    for(InvoiceHeader inv : invHeaderArray){
+                        System.out.println("\nInvoice "+ inv.getInvNumber() + "\n{ \n"
+                                +inv.getCustomerName() + ",\n" +inv.getInvDate());
+                        ArrayList<InvoiceLine> lines = inv.getLines();
+                        for(InvoiceLine line: inv.getLines()){
+                            System.out.println(line.getName() + "," +
+                                    line.getPrice() + "," + line.getCount());
+                        }
+                        System.out.println("}");
+                    }
                 }
-            }}
+            }
+        }
         catch(IOException e){
             e.printStackTrace();
         }
@@ -239,7 +265,7 @@ public class ActionsHandeller implements ActionListener, ListSelectionListener {
     private void cancelItemsData() {
         int selectedRow = frame.getInvItemsTable().getSelectedRow();
         if (selectedRow != -1) {
-            System.out.println(selectedRow);
+            //System.out.println(selectedRow);
             InvLineTableMod linesTableModel = (InvLineTableMod) frame.getInvItemsTable().getModel();
             linesTableModel.getLines().remove(selectedRow);
             linesTableModel.fireTableDataChanged();
