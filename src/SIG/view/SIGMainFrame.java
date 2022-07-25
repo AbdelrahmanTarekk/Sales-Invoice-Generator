@@ -46,10 +46,7 @@ public class SIGMainFrame extends JFrame {
     private Border titledBorder;
 
     String [] itemTableBar= {"No.","Item Name","Item Price","Count","Item Total"};
-    String [][] itemData={
-           {"","","","",""}
-
-    };
+    String [][] itemData={};
     private JTable invItemsTable;
     private JButton savebtn;
     private JButton cancelbtn;
@@ -128,8 +125,8 @@ public class SIGMainFrame extends JFrame {
         invTable = new JTable(customerData,customerTableBar);
         DefaultTableModel invModel = new DefaultTableModel();
         invModel.setColumnIdentifiers(customerTableBar);
-
         invTable.setModel(invModel);
+        invTable.getSelectionModel().addListSelectionListener(handler);
 
         b = BorderFactory.createTitledBorder("Invoice Table");
 

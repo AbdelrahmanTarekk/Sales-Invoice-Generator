@@ -8,6 +8,8 @@ import SIG.view.LinesDialog;
 import SIG.model.InvLineTableMod;
 import SIG.model.InvoiceHeader;
 import SIG.model.InvoiceLine;
+//import SIG.model.FileOperations;
+
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -31,10 +33,10 @@ public class ActionsHandeller implements ActionListener, ListSelectionListener {
     private LinesDialog invLineDialog;
 
     private SIGMainFrame frame;
+
     public ActionsHandeller(SIGMainFrame frame){
         this.frame=frame;
     }
-
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -70,7 +72,6 @@ public class ActionsHandeller implements ActionListener, ListSelectionListener {
         case "cancelCreationLine":
             cancelCreationLine();
             break;
-
     }
 }
 
@@ -208,7 +209,9 @@ public class ActionsHandeller implements ActionListener, ListSelectionListener {
                 } else {
 
                     InvoiceHeader invoice = new InvoiceHeader(numberInv, customerName, dateInv);
-                    frame.getInvHeaderArray().add(invoice);
+                    ArrayList<InvoiceHeader> invh = frame.getInvHeaderArray();
+                    invh.add(invoice);
+                    frame.setInvHeaderArray(invh);
                     frame.getInvHeaderTableMod().fireTableDataChanged();
                     invDialog.setVisible(false);
                     invDialog.dispose();
@@ -282,6 +285,5 @@ public class ActionsHandeller implements ActionListener, ListSelectionListener {
         }
         return null;
     }
-
 
 }
